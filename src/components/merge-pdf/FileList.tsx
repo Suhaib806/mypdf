@@ -22,18 +22,18 @@ const FileList: React.FC<FileListProps> = ({ files, onDragEnd, onRemoveFile, get
       </div>
       
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="files" isDropDisabled={false} isCombineEnabled={false} ignoreContainerClipping={false}>
+        <Droppable droppableId="files">
           {(provided: DroppableProvided) => (
             <ul 
               className="mt-2 divide-y divide-gray-100 border-t border-gray-100"
               {...provided.droppableProps}
-              ref={provided.innerRef}
+              ref={(el) => provided.innerRef(el as HTMLElement)}
             >
               {files.map((file, index) => (
                 <Draggable key={index} draggableId={`file-${index}`} index={index}>
                   {(provided: DraggableProvided) => (
                     <li 
-                      ref={provided.innerRef}
+                      ref={(el) => provided.innerRef(el as HTMLElement)}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                       className="flex items-center justify-between py-2"
