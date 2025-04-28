@@ -1,3 +1,6 @@
+import React from 'react';
+import { pdfService } from '@/services/api';
+
 interface ResultDisplayProps {
   result: {
     url: string;
@@ -6,10 +9,6 @@ interface ResultDisplayProps {
 }
 
 export default function ResultDisplay({ result }: ResultDisplayProps) {
-  const handleDownload = () => {
-    window.location.href = result.url;
-  };
-
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Conversion Complete!</h2>
@@ -18,8 +17,9 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
           Your PDF has been created successfully. Click the button below to download.
         </p>
         <div className="flex justify-center">
-          <button
-            onClick={handleDownload}
+          <a
+            href={result.url}
+            download={result.filename}
             className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg flex items-center space-x-2"
           >
             <span>Download PDF</span>
@@ -37,7 +37,7 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
               />
             </svg>
-          </button>
+          </a>
         </div>
       </div>
     </div>

@@ -236,6 +236,10 @@ export const pdfService = {
       xhr.onload = function() {
         if (xhr.status >= 200 && xhr.status < 300) {
           const result = JSON.parse(xhr.responseText);
+          if (!result.session_id || !result.filename) {
+            reject(new Error('Invalid response from server: missing session_id or filename'));
+            return;
+          }
           resolve({
             url: pdfService.getDownloadUrl(result.session_id, result.filename),
             filename: result.filename

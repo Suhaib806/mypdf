@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useState } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import FileUploader from "@/components/split-pdf/FileUploader";
@@ -8,10 +8,9 @@ import PageOptions from "@/components/split-pdf/PageOptions";
 import ResultDisplay from "@/components/split-pdf/ResultDisplay";
 import ErrorDisplay from "@/components/merge-pdf/ErrorDisplay";
 import ProgressBar from "@/components/merge-pdf/ProgressBar";
-import { validateFiles } from "@/utils/fileUtils";
+import { validateFiles, formatFileSize } from "@/utils/fileUtils";
 import { SplitResult } from "@/types/pdf";
 import { pdfService } from "@/services/api";
-import os from "os";
 
 export default function SplitPdf() {
   const [file, setFile] = useState<File | null>(null);
@@ -19,69 +18,30 @@ export default function SplitPdf() {
   const [isLoading, setIsLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [splitResult, setSplitResult] = useState<SplitResult | null>(null);
-  const [totalPages, setTotalPages] = useState(0);
   const [splitMethod, setSplitMethod] = useState<'all' | 'range' | 'specific'>('all');
   const [pageRange, setPageRange] = useState('');
   const [specificPages, setSpecificPages] = useState('');
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dropZoneRef = useRef<HTMLDivElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
+  const handleFilesSelected = (files: File[]) => {
+    if (files.length > 0) {
       try {
-        validateFiles([e.target.files[0]]);
-        setFile(e.target.files[0]);
+        validateFiles([files[0]]);
+        setFile(files[0]);
         setError(null);
       } catch (err) {
         setFile(null);
         setError(err instanceof Error ? err.message : "Invalid file");
       }
     } else {
-      // Handle file removal - reset all relevant state
       setFile(null);
       setSplitResult(null);
-      setTotalPages(0);
     }
   };
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (dropZoneRef.current) {
-      dropZoneRef.current.classList.remove('border-indigo-500', 'bg-indigo-100');
-    }
-    
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      try {
-        validateFiles([e.dataTransfer.files[0]]);
-        setFile(e.dataTransfer.files[0]);
-        setError(null);
-      } catch (err) {
-        setFile(null);
-        setError(err instanceof Error ? err.message : "Invalid file");
-      }
-    }
-  }, []);
-
-  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (dropZoneRef.current) {
-      dropZoneRef.current.classList.add('border-indigo-500', 'bg-indigo-100');
-    }
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (dropZoneRef.current) {
-      dropZoneRef.current.classList.remove('border-indigo-500', 'bg-indigo-100');
-    }
-  }, []);
+  const handleRemoveFile = () => {
+    setFile(null);
+    setSplitResult(null);
+  };
 
   const handleSplitMethodChange = (method: 'all' | 'range' | 'specific') => {
     setSplitMethod(method);
@@ -120,11 +80,10 @@ export default function SplitPdf() {
       setSplitResult({
         processingTime: response.processing_time,
         files: response.result_files.map((filePath: string, index: number) => {
-          // Extract the filename from the full path
           const filename = filePath.split('/').pop() || `split_${index + 1}.pdf`;
           return {
             filename,
-            size: 0, // We'll get the actual size from the backend response
+            size: 0,
             url: pdfService.getDownloadUrl(response.session_id, filename)
           };
         }),
@@ -153,17 +112,50 @@ export default function SplitPdf() {
 
           <div className="mt-8 mb-0 space-y-4 rounded-lg p-8 shadow-lg bg-white">
             <FileUploader
-              fileInputRef={fileInputRef}
-              dropZoneRef={dropZoneRef}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onFileChange={handleFileChange}
-              selectedFile={file}
+              onFilesSelected={handleFilesSelected}
+              maxFiles={1}
+              maxSize={50 * 1024 * 1024}
+              acceptedFileTypes={['.pdf']}
             />
 
+            {file && (
+              <div className="mt-4 p-4 border border-gray-200 rounded-md">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-5 w-5 text-indigo-600" 
+                      viewBox="0 0 20 20" 
+                      fill="currentColor"
+                    >
+                      <path 
+                        fillRule="evenodd" 
+                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" 
+                        clipRule="evenodd" 
+                      />
+                    </svg>
+                    <div className="ml-2">
+                      <span className="text-sm text-gray-700 truncate max-w-xs block">
+                        {file.name}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {formatFileSize(file.size)}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="text-sm font-medium text-red-600 hover:text-red-500"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            )}
+
             <PageOptions
-              totalPages={totalPages}
+              totalPages={0}
               splitMethod={splitMethod}
               pageRange={pageRange}
               specificPages={specificPages}
@@ -172,29 +164,49 @@ export default function SplitPdf() {
               onSpecificPagesChange={handleSpecificPagesChange}
             />
 
-            <ProgressBar
-              progress={uploadProgress}
-              isLoading={isLoading}
-            />
+            {isLoading && (
+              <div className="mt-4">
+                <div className="relative pt-1">
+                  <div className="overflow-hidden h-2 text-xs flex rounded bg-indigo-200">
+                    <div
+                      style={{ width: `${uploadProgress}%` }}
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-indigo-500 transition-all duration-500"
+                    />
+                  </div>
+                  <div className="text-center mt-2 text-sm text-gray-600">
+                    {isLoading ? 'Processing...' : `${uploadProgress}%`}
+                  </div>
+                </div>
+              </div>
+            )}
 
-            <ErrorDisplay error={error} />
+            {error && (
+              <div className="rounded-md bg-red-50 p-4">
+                <div className="flex">
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800">Error</h3>
+                    <div className="mt-2 text-sm text-red-700">
+                      <p>{error}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
-            <ResultDisplay splitResult={splitResult} />
+            <button
+              type="button"
+              onClick={handleSplit}
+              disabled={isLoading || !file}
+              className={`inline-block rounded-lg ${
+                isLoading || !file
+                  ? 'bg-gray-300 cursor-not-allowed'
+                  : 'bg-indigo-600 hover:bg-indigo-700'
+              } px-5 py-3 text-sm font-medium text-white w-full`}
+            >
+              {isLoading ? 'Processing...' : 'Split PDF'}
+            </button>
 
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={handleSplit}
-                disabled={isLoading || !file}
-                className={`inline-block rounded-lg ${
-                  isLoading || !file
-                    ? 'bg-gray-300 cursor-not-allowed'
-                    : 'bg-indigo-600 hover:bg-indigo-700'
-                } px-5 py-3 text-sm font-medium text-white w-full`}
-              >
-                {isLoading ? 'Processing...' : 'Split PDF'}
-              </button>
-            </div>
+            {splitResult && <ResultDisplay splitResult={splitResult} />}
           </div>
         </div>
       </div>
