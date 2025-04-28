@@ -38,7 +38,7 @@ const Products = () => {
       bgColor: 'bg-[#6457a4]'
     },
     {
-      href: "#",
+      href: "/image-to-pdf",
       title: "Image to pdf",
       description: "Convert images (JPG, PNG, etc.) into a single PDF document.",
       imgSrc: "/img-pdf.svg",
@@ -71,17 +71,26 @@ const Products = () => {
             <CardComponent
               key={product.title}
               href={product.href}
-              className={`block rounded-lg    overflow-hidden ${product.isLink === false ? 'cursor-pointer' : ''}`}
+              className={`block rounded-lg overflow-hidden ${product.isLink === false ? 'cursor-pointer' : ''}`}
             >
               <div className={`flex flex-col md:flex-row gap-5 items-center ${isImageLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
                 <div className={`w-full md:w-1/2 pt-6 md:px-10 md:pt-10 rounded-3xl flex justify-center items-center ${product.bgColor}`}>
-                  <Image
-                    src={product.imgSrc}
-                    alt={product.imgAlt}
-                    width={500}
-                    height={200}
-                    className="object-cover bg-center bg-white rounded-t-2xl"
-                  /> 
+                  {product.imgSrc.endsWith('.svg') ? (
+                    <img
+                      src={product.imgSrc}
+                      alt={product.imgAlt}
+                      className="object-cover bg-center bg-white rounded-t-2xl w-full h-auto"
+                    />
+                  ) : (
+                    <Image
+                      src={product.imgSrc}
+                      alt={product.imgAlt}
+                      width={500}
+                      height={200}
+                      className="object-cover bg-center bg-white rounded-t-2xl"
+                      unoptimized
+                    />
+                  )}
                 </div>
                 <div className="w-full md:w-1/2 p-6 flex flex-col gap-2 justify-center">
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-black mb-2">

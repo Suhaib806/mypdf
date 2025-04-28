@@ -1,7 +1,8 @@
 import { PdfServiceResponse, PdfSplitResponse, PdfToWordResponse } from '@/types/pdf';
 import { WordFormat } from '@/components/pdf-to-word/ConversionOptions';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://pdf-production-ef1b.up.railway.app/api';
+
 
 export const pdfService = {
   /**
@@ -185,6 +186,62 @@ export const pdfService = {
           resolve(JSON.parse(xhr.responseText));
         } else {
           reject(new Error(xhr.statusText || 'Failed to convert PDF to Word'));
+        }
+      };
+      xhr.onerror = function() {
+        reject(new Error('Network error occurred'));
+      };
+    });
+    
+    xhr.send(formData);
+    return response;
+  },
+
+  /**
+   * Convert images to PDF
+   */
+  async imagesToPdf(
+    files: File[],
+    options: {
+      quality: string;
+      pageSize: string;
+      orientation: string;
+    },
+    onProgress?: (progress: number) => void
+  ): Promise<{ url: string; filename: string }> {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+    formData.append('quality', options.quality);
+    formData.append('pageSize', options.pageSize);
+    formData.append('orientation', options.orientation);
+    
+    const xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', `${API_URL}/image-to-pdf`, true);
+    
+    // Set up progress tracking
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+    }
+    
+    // Create a promise to handle the response
+    const response = new Promise<{ url: string; filename: string }>((resolve, reject) => {
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const result = JSON.parse(xhr.responseText);
+          resolve({
+            url: pdfService.getDownloadUrl(result.session_id, result.filename),
+            filename: result.filename
+          });
+        } else {
+          reject(new Error(xhr.statusText || 'Failed to convert images to PDF'));
         }
       };
       xhr.onerror = function() {
