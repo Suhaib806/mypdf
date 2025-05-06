@@ -20,31 +20,41 @@ const Products = () => {
       imgAlt: "Split PDF illustration",
       bgColor: 'bg-[#f0127a]'
     },
-    {
-      href: "/pdf-to-word",
-      title: "Pdf to Word",
-      description: "Convert your PDF documents to editable Word files. Preserve formatting and layouts.",
-      imgSrc: "/pdf-word.svg",
-      imgAlt: "PDF to Word illustration",
-      bgColor: 'bg-[#62c2ac]'
-    },
-    {
-      href: "#",
-      title: "Pdf to Excel",
-      description: "Transform your PDF tables and data into Excel spreadsheets for easy analysis.",
-      imgSrc: "/pdf-excel.jpeg",
-      imgAlt: "PDF to Excel illustration",
-      isLink: false,
-      bgColor: 'bg-[#6457a4]'
-    },
+  
+    // {
+    //   href: "/pdf-to-word",
+    //   title: "Pdf to Word",
+    //   description: "Convert your PDF documents to editable Word files. Preserve formatting and layouts.",
+    //   imgSrc: "/pdf-word.svg",
+    //   imgAlt: "PDF to Word illustration",
+    //   bgColor: 'bg-[#62c2ac]'
+    // },
+
     {
       href: "/image-to-pdf",
       title: "Image to pdf",
       description: "Convert images (JPG, PNG, etc.) into a single PDF document.",
       imgSrc: "/img-pdf.svg",
       imgAlt: "Image to PDF illustration",
-      isLink: false,
+      isLink: true,
       bgColor: 'bg-[#292a61]'
+    },
+
+    {
+      href: "/pdf-to-jpg",
+      title: "Pdf to JPG",
+      description: "Convert your PDF pages into high-quality JPG images. Choose your preferred quality and resolution.",
+      imgSrc: "/pdf-jpg.svg",
+      imgAlt: "PDF to JPG illustration",
+      bgColor: 'bg-[#fdb712]'
+    },
+    {
+      href: "/powerpoint-to-pdf",
+      title: "PowerPoint to PDF",
+      description: "Convert your PowerPoint presentations to PDF format while preserving all formatting and layouts.",
+      imgSrc: "/ppt-pdf.png",
+      imgAlt: "PowerPoint to PDF illustration",
+      bgColor: 'bg-[#62c2ac]'
     },
   ];
 

@@ -1,7 +1,9 @@
 import { PdfServiceResponse, PdfSplitResponse, PdfToWordResponse } from '@/types/pdf';
 import { WordFormat } from '@/components/pdf-to-word/ConversionOptions';
 
+// Use the production URL if available, otherwise use localhost for development
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://pdf-production-ef1b.up.railway.app/api';
+
 
 
 export const pdfService = {
@@ -246,6 +248,112 @@ export const pdfService = {
           });
         } else {
           reject(new Error(xhr.statusText || 'Failed to convert images to PDF'));
+        }
+      };
+      xhr.onerror = function() {
+        reject(new Error('Network error occurred'));
+      };
+    });
+    
+    xhr.send(formData);
+    return response;
+  },
+
+  /**
+   * Convert PDF to JPG images
+   */
+  async convertPdfToJpg(
+    file: File,
+    options: {
+      quality: 'high' | 'low';
+      dpi: number;
+    },
+    onProgress?: (progress: number) => void
+  ): Promise<{ url: string; filename: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('quality', options.quality);
+    formData.append('dpi', options.dpi.toString());
+    
+    const xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', `${API_URL}/pdf-to-jpg`, true);
+    
+    // Set up progress tracking
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+    }
+    
+    // Create a promise to handle the response
+    const response = new Promise<{ url: string; filename: string }>((resolve, reject) => {
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const result = JSON.parse(xhr.responseText);
+          if (!result.session_id || !result.filename) {
+            reject(new Error('Invalid response from server: missing session_id or filename'));
+            return;
+          }
+          resolve({
+            url: pdfService.getDownloadUrl(result.session_id, result.filename),
+            filename: result.filename
+          });
+        } else {
+          reject(new Error(xhr.statusText || 'Failed to convert PDF to JPG'));
+        }
+      };
+      xhr.onerror = function() {
+        reject(new Error('Network error occurred'));
+      };
+    });
+    
+    xhr.send(formData);
+    return response;
+  },
+
+  /**
+   * Convert PowerPoint to PDF
+   */
+  async convertPowerPointToPdf(
+    file: File,
+    onProgress?: (progress: number) => void
+  ): Promise<{ url: string; filename: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', `${API_URL}/powerpoint-to-pdf`, true);
+    
+    // Set up progress tracking
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+    }
+    
+    // Create a promise to handle the response
+    const response = new Promise<{ url: string; filename: string }>((resolve, reject) => {
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const result = JSON.parse(xhr.responseText);
+          if (!result.session_id || !result.filename) {
+            reject(new Error('Invalid response from server: missing session_id or filename'));
+            return;
+          }
+          resolve({
+            url: pdfService.getDownloadUrl(result.session_id, result.filename),
+            filename: result.filename
+          });
+        } else {
+          reject(new Error(xhr.statusText || 'Failed to convert PowerPoint to PDF'));
         }
       };
       xhr.onerror = function() {

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- PowerPoint Icon -->
+  <rect x="40" y="40" width="120" height="120" rx="10" fill="#D24726"/>
+  <path d="M80 60H120C122.209 60 124 61.7909 124 64V136C124 138.209 122.209 140 120 140H80C77.7909 140 76 138.209 76 136V64C76 61.7909 77.7909 60 80 60Z" fill="white"/>
+  <path d="M90 80H110V100H90V80Z" fill="#D24726"/>
+  <path d="M90 110H110V130H90V110Z" fill="#D24726"/>
+  
+  <!-- PDF Icon -->
+  <rect x="60" y="60" width="80" height="80" rx="5" fill="#FF0000"/>
+  <path d="M80 80H100V100H80V80Z" fill="white"/>
+  <path d="M85 85H95V95H85V85Z" fill="#FF0000"/>
+</svg> 

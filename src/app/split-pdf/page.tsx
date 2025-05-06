@@ -100,8 +100,8 @@ export default function SplitPdf() {
     <div>
       <Header />
       
-      <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-lg">
+      <div className=" min-h-screen flex flex-col justify-center items-center mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto min-w-lg">
           <h1 className="text-2xl font-bold text-center text-indigo-600 sm:text-3xl">
             Split PDF Files
           </h1>
