@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import React, { useState } from 'react'
 
 const Header = () => {
@@ -27,23 +28,23 @@ const Header = () => {
         <nav aria-label="Global" className="hidden md:block">
           <ul className="flex items-center gap-10 text-[16px] font-medium">
             <li>
-              <a className="text-black transition hover:text-[#5cacb3]" href="/merge-pdf"> Merge PDF </a>
+              <Link className="text-black transition hover:text-[#5cacb3]" href="/merge-pdf"> Merge PDF </Link>
             </li>
   
             <li>
-              <a  className="text-black transition hover:text-[#5cacb3]" href="/split-pdf"> Split PDF </a>
+              <Link  className="text-black transition hover:text-[#5cacb3]" href="/split-pdf"> Split PDF </Link>
             </li>
   
             <li>
-              <a  className="text-black transition hover:text-[#5cacb3]" href="/image-to-pdf"> Image to PDF </a>
+              <Link  className="text-black transition hover:text-[#5cacb3]" href="/image-to-pdf"> Image to PDF </Link>
             </li>
   
             <li>
-              <a  className="text-black transition hover:text-[#5cacb3]" href="/pdf-to-jpg"> PDF to JPG </a>
+              <Link  className="text-black transition hover:text-[#5cacb3]" href="/pdf-to-jpg"> PDF to JPG </Link>
             </li>
   
             <li>
-              <a className="text-black transition hover:text-[#5cacb3]" href="/powerpoint-to-pdf"> PPT to PDF </a>
+              <Link className="text-black transition hover:text-[#5cacb3]" href="/powerpoint-to-pdf"> PPT to PDF </Link>
             </li>
   
           
