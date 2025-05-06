@@ -25,30 +25,28 @@ const Header = () => {
 
       <div className="flex flex-1 items-center justify-end md:justify-between">
         <nav aria-label="Global" className="hidden md:block">
-          <ul className="flex items-center gap-6 text-[16px] font-medium">
+          <ul className="flex items-center gap-10 text-[16px] font-medium">
             <li>
-              <a className="text-black transition hover:text-[#5cacb3]" href="#"> About </a>
+              <a className="text-black transition hover:text-[#5cacb3]" href="/merge-pdf"> Merge PDF </a>
             </li>
   
             <li>
-              <a  className="text-black transition hover:text-[#5cacb3]" href="#"> Careers </a>
+              <a  className="text-black transition hover:text-[#5cacb3]" href="/split-pdf"> Split PDF </a>
             </li>
   
             <li>
-              <a  className="text-black transition hover:text-[#5cacb3]" href="#"> History </a>
+              <a  className="text-black transition hover:text-[#5cacb3]" href="/image-to-pdf"> Image to PDF </a>
             </li>
   
             <li>
-              <a  className="text-black transition hover:text-[#5cacb3]" href="#"> Services </a>
+              <a  className="text-black transition hover:text-[#5cacb3]" href="/pdf-to-jpg"> PDF to JPG </a>
             </li>
   
             <li>
-              <a className="text-black transition hover:text-[#5cacb3]" href="#"> Projects </a>
+              <a className="text-black transition hover:text-[#5cacb3]" href="/powerpoint-to-pdf"> PPT to PDF </a>
             </li>
   
-            <li>
-              <a className="text-black transition hover:text-[#5cacb3]" href="#"> Blog </a>
-            </li>
+          
           </ul>
         </nav>
   

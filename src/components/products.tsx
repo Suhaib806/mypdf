@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import TrustedSection from "./TrustedSection";
 
 const Products = () => {
   const productData = [
@@ -59,68 +60,72 @@ const Products = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-      {/* Features Section */}
-      <div className="text-center mb-16">
-        <h2 className="text-[18px] leading-[31px] font-semibold text-[#9886fe] tracking-wide ">Features</h2>
-        <h1 className="text-4xl md:text-5xl lg:text-[56px] leading-tight font-bold text-black px-4 md:px-8 mt-2">
-          Your essential productivity toolkit
-        </h1>
-        <p className="mt-4 text-[18px] text-gray-800 font-normal max-w-xl mx-auto">
-          Simplify project planning, streamline collaboration, and boost productivity all with TaskHub task management solution.
-        </p>
-      </div>
+    <>
+      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        {/* Features Section */}
+        <div className="text-center mb-16">
+          <h2 className="text-[18px] leading-[31px] font-semibold text-[#9886fe] tracking-wide ">Features</h2>
+          <h1 className="text-4xl md:text-5xl lg:text-[56px] leading-tight font-bold text-black px-4 md:px-8 mt-2">
+            Your essential productivity toolkit
+          </h1>
+          <p className="mt-4 text-[18px] text-gray-800 font-normal max-w-xl mx-auto">
+            Simplify project planning, streamline collaboration, and boost productivity all with TaskHub task management solution.
+          </p>
+        </div>
 
-      {/* Products Grid - Changed to vertical stack */}
-      <div className="space-y-12">
-        {productData.map((product, index) => {
-          const isImageLeft = index % 2 === 0;
-          const CardComponent = product.isLink === false ? 'a' : Link;
+        {/* Products Flexbox - Centered with 3 columns */}
+        <div className="flex justify-center">
+          <div className="flex flex-wrap justify-center gap-8 max-w-6xl">
+            {productData.map((product) => {
+              const CardComponent = product.isLink === false ? 'a' : Link;
 
-          return (
-            <CardComponent
-              key={product.title}
-              href={product.href}
-              className={`block rounded-lg overflow-hidden ${product.isLink === false ? 'cursor-pointer' : ''}`}
-            >
-              <div className={`flex flex-col md:flex-row gap-5 items-center ${isImageLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-                <div className={`w-full md:w-1/2 pt-6 md:px-10 md:pt-10 rounded-3xl flex justify-center items-center ${product.bgColor}`}>
-                  {product.imgSrc.endsWith('.svg') ? (
-                    <img
-                      src={product.imgSrc}
-                      alt={product.imgAlt}
-                      className="object-cover bg-center bg-white rounded-t-2xl w-full h-auto"
-                    />
-                  ) : (
-                    <Image
-                      src={product.imgSrc}
-                      alt={product.imgAlt}
-                      width={500}
-                      height={200}
-                      className="object-cover bg-center bg-white rounded-t-2xl"
-                      unoptimized
-                    />
-                  )}
-                </div>
-                <div className="w-full md:w-1/2 p-6 flex flex-col gap-2 justify-center">
-                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-black mb-2">
-                    {product.title}
-                  </h3>
-                  <p className="text-base text-gray-600">
-                    {product.description}
-                  </p>
-                  <div className="mt-4">
-                    <span className="text-white bg-black px-6 py-2.5  mt-8 rounded-full hover:bg-[#9886fe] font-medium">
-                      Get Started &rarr;
-                    </span>
+              return (
+                <CardComponent
+                  key={product.title}
+                  href={product.href}
+                  className={`block rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.5rem)] ${product.isLink === false ? 'cursor-pointer' : ''}`}
+                >
+                  <div className="flex flex-col h-full">
+                    <div className={`w-full h-[200px] pt-6 px-6 rounded-t-3xl flex justify-center items-center ${product.bgColor}`}>
+                      {product.imgSrc.endsWith('.svg') ? (
+                        <img
+                          src={product.imgSrc}
+                          alt={product.imgAlt}
+                          className="object-cover w-full h-full bg-white rounded-t-2xl"
+                        />
+                      ) : (
+                        <Image
+                          src={product.imgSrc}
+                          alt={product.imgAlt}
+                          width={300}
+                          height={200}
+                          className="object-cover w-full h-full rounded-t-2xl"
+                          unoptimized
+                        />
+                      )}
+                    </div>
+                    <div className="p-6 flex flex-col gap-2 flex-grow">
+                      <h3 className="text-2xl font-semibold text-black mb-2">
+                        {product.title}
+                      </h3>
+                      <p className="text-base text-gray-600">
+                        {product.description}
+                      </p>
+                      <div className="mt-auto pt-4">
+                        <span className="inline-block text-white bg-black px-6 py-2.5 rounded-full hover:bg-[#9886fe] font-medium transition-colors duration-300">
+                          Get Started &rarr;
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </CardComponent>
-          );
-        })}
+                </CardComponent>
+              );
+            })}
+          </div>
+        </div>
       </div>
-    </div>
+      <TrustedSection />
+    </>
   );
 };
 
