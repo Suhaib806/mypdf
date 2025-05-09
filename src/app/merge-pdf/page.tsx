@@ -67,7 +67,7 @@ export default function MergePdf() {
       
       <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-lg">
-          <h1 className="text-2xl font-bold text-center text-indigo-600 sm:text-3xl">
+          <h1 className="text-2xl font-bold text-center text-black sm:text-3xl">
             Merge PDF Files
           </h1>
 

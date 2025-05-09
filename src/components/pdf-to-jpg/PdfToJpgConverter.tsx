@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { pdfService } from '@/services/api';
+import { formatFileSize } from '@/utils/fileUtils';
 
 interface ConversionOptions {
   quality: 'high' | 'low';
@@ -13,6 +14,8 @@ export default function PdfToJpgConverter() {
   const [file, setFile] = useState<File | null>(null);
   const [isConverting, setIsConverting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [downloadInfo, setDownloadInfo] = useState<{ url: string; filename: string } | null>(null);
   const [options, setOptions] = useState<ConversionOptions>({
     quality: 'high',
     dpi: 300
@@ -24,6 +27,7 @@ export default function PdfToJpgConverter() {
       if (file.type === 'application/pdf') {
         setFile(file);
         setError(null);
+        setDownloadInfo(null);
       } else {
         setError('Please upload a PDF file');
       }
@@ -35,7 +39,8 @@ export default function PdfToJpgConverter() {
     accept: {
       'application/pdf': ['.pdf']
     },
-    maxFiles: 1
+    maxFiles: 1,
+    maxSize: 50 * 1024 * 1024 // 50MB
   });
 
   const handleConvert = async () => {
@@ -46,19 +51,19 @@ export default function PdfToJpgConverter() {
 
     setIsConverting(true);
     setError(null);
+    setUploadProgress(0);
+    setDownloadInfo(null);
 
     try {
-      const result = await pdfService.convertPdfToJpg(file, options);
+      const result = await pdfService.convertPdfToJpg(
+        file,
+        options,
+        (progress) => {
+          setUploadProgress(progress);
+        }
+      );
       
-      // Download the converted file
-      const a = document.createElement('a');
-      a.href = result.url;
-      a.download = result.filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      setFile(null);
+      setDownloadInfo(result);
     } catch (error) {
       console.error('Conversion error:', error);
       setError(error instanceof Error ? error.message : 'Failed to convert PDF to JPG');
@@ -67,63 +72,94 @@ export default function PdfToJpgConverter() {
     }
   };
 
+  const handleDownload = () => {
+    if (downloadInfo) {
+      const a = document.createElement('a');
+      a.href = downloadInfo.url;
+      a.download = downloadInfo.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center">PDF to JPG Converter</h2>
-        
+    <div className="w-full max-w-3xl mx-auto">
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
         {error && (
-          <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-md">
+          <div className="mb-4 p-3 sm:p-4 bg-red-50 text-red-600 rounded-lg text-sm sm:text-base">
             {error}
           </div>
         )}
         
-        <div className="mb-6">
+        <div className="flex justify-center transition-colors duration-200">
           <div
             {...getRootProps()}
-            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-              isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'
-            }`}
+            className={`w-full p-4 sm:p-6 lg:p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors duration-200
+              ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-500'}`}
           >
             <input {...getInputProps()} />
             {file ? (
-              <div className="text-green-600">
-                <p>Selected file: {file.name}</p>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="size-6 text-indigo-600" 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path 
+                      fillRule="evenodd" 
+                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" 
+                      clipRule="evenodd" 
+                    />
+                  </svg>
+                  <div>
+                    <span className="text-sm sm:text-base text-gray-700 font-medium block">
+                      {file.name}
+                    </span>
+                    <span className="text-xs sm:text-sm text-gray-500">
+                      {formatFileSize(file.size)}
+                    </span>
+                  </div>
+                </div>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setFile(null);
                     setError(null);
+                    setDownloadInfo(null);
                   }}
-                  className="mt-2 text-red-500 hover:text-red-700"
+                  className="text-sm font-medium text-red-600 hover:text-red-500 px-3 py-1 rounded-md hover:bg-red-50 transition-colors duration-200"
                 >
-                  Remove file
+                  Remove
                 </button>
               </div>
             ) : (
-              <div>
-                <p className="text-gray-600">
-                  {isDragActive
-                    ? 'Drop the PDF file here'
-                    : 'Drag and drop a PDF file here, or click to select'}
+              <div className="space-y-2">
+                <p className="text-sm sm:text-base text-gray-600">
+                  Drag and drop a PDF file here, or click to select
                 </p>
-                <p className="text-sm text-gray-500 mt-2">Only PDF files are supported</p>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Supports PDF files up to 50MB
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-3">Conversion Options</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mt-6 space-y-4">
+          <h3 className="text-base sm:text-lg font-medium text-gray-900">Conversion Options</h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm sm:text-base font-medium text-gray-700 mb-1">
                 Image Quality
               </label>
               <select
                 value={options.quality}
                 onChange={(e) => setOptions({ ...options, quality: e.target.value as 'high' | 'low' })}
-                className="w-full p-2 border rounded-md"
+                className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3 py-2"
                 disabled={isConverting}
               >
                 <option value="high">High Quality</option>
@@ -131,13 +167,13 @@ export default function PdfToJpgConverter() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm sm:text-base font-medium text-gray-700 mb-1">
                 DPI (Resolution)
               </label>
               <select
                 value={options.dpi}
                 onChange={(e) => setOptions({ ...options, dpi: parseInt(e.target.value) })}
-                className="w-full p-2 border rounded-md"
+                className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3 py-2"
                 disabled={isConverting}
               >
                 <option value="150">150 DPI</option>
@@ -148,15 +184,27 @@ export default function PdfToJpgConverter() {
           </div>
         </div>
 
-        <div className="text-center">
+        {isConverting && (
+          <div className="mt-6">
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
+            </div>
+            <p className="text-sm text-gray-500 mt-2 text-center">Converting... {uploadProgress}%</p>
+          </div>
+        )}
+
+        {!downloadInfo ? (
           <button
             onClick={handleConvert}
             disabled={!file || isConverting}
-            className={`px-6 py-3 rounded-md text-white font-medium ${
-              !file || isConverting
+            className={`mt-6 w-full py-2.5 sm:py-3 px-4 rounded-lg text-white font-medium text-sm sm:text-base transition-colors duration-200
+              ${!file || isConverting
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
-            }`}
+                : 'bg-indigo-600 hover:bg-indigo-700'
+              }`}
           >
             {isConverting ? (
               <span className="flex items-center justify-center">
@@ -170,7 +218,35 @@ export default function PdfToJpgConverter() {
               'Convert to JPG'
             )}
           </button>
-        </div>
+        ) : (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-lg bg-green-50 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="text-sm sm:text-base font-medium text-green-800">Success</h3>
+                  <p className="mt-1 text-sm text-green-700">
+                    Your PDF has been converted successfully!
+                  </p>
+                </div>
+                <button
+                  onClick={handleDownload}
+                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 transition-colors duration-200"
+                >
+                  Download JPG
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setFile(null);
+                setDownloadInfo(null);
+              }}
+              className="w-full py-2.5 sm:py-3 px-4 rounded-lg text-gray-600 font-medium text-sm sm:text-base border border-gray-300 hover:bg-gray-50 transition-colors duration-200"
+            >
+              Convert Another File
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

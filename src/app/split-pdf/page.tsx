@@ -97,20 +97,21 @@ export default function SplitPdf() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Header />
       
-      <div className=" min-h-screen flex flex-col justify-center items-center mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto min-w-lg">
-          <h1 className="text-2xl font-bold text-center text-indigo-600 sm:text-3xl">
-            Split PDF Files
-          </h1>
+      <main className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-lg">
+          <div className="text-center mb-8 sm:mb-12">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+              Split PDF Files
+            </h1>
+            <p className="mt-4 text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+              Extract pages from your PDF document
+            </p>
+          </div>
 
-          <p className="mx-auto mt-4 max-w-md text-center text-gray-500">
-            Extract pages from your PDF document
-          </p>
-
-          <div className="mt-8 mb-0 space-y-4 rounded-lg p-8 shadow-lg bg-white">
+          <div className="mt-8 mb-0 space-y-4 rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg bg-white">
             <FileUploader
               onFilesSelected={handleFilesSelected}
               maxFiles={1}
@@ -119,12 +120,12 @@ export default function SplitPdf() {
             />
 
             {file && (
-              <div className="mt-4 p-4 border border-gray-200 rounded-md">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
+              <div className="mt-4 p-3 sm:p-4 border border-gray-200 rounded-lg">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
-                      className="h-5 w-5 text-indigo-600" 
+                      className="size-5 sm:size-6 text-indigo-600" 
                       viewBox="0 0 20 20" 
                       fill="currentColor"
                     >
@@ -134,11 +135,11 @@ export default function SplitPdf() {
                         clipRule="evenodd" 
                       />
                     </svg>
-                    <div className="ml-2">
-                      <span className="text-sm text-gray-700 truncate max-w-xs block">
+                    <div>
+                      <span className="text-sm sm:text-base text-gray-700 font-medium block">
                         {file.name}
                       </span>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs sm:text-sm text-gray-500">
                         {formatFileSize(file.size)}
                       </span>
                     </div>
@@ -146,7 +147,7 @@ export default function SplitPdf() {
                   <button
                     type="button"
                     onClick={handleRemoveFile}
-                    className="text-sm font-medium text-red-600 hover:text-red-500"
+                    className="text-sm font-medium text-red-600 hover:text-red-500 px-3 py-1 rounded-md hover:bg-red-50 transition-colors duration-200"
                   >
                     Remove
                   </button>
@@ -181,11 +182,11 @@ export default function SplitPdf() {
             )}
 
             {error && (
-              <div className="rounded-md bg-red-50 p-4">
+              <div className="rounded-lg bg-red-50 p-3 sm:p-4">
                 <div className="flex">
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">Error</h3>
-                    <div className="mt-2 text-sm text-red-700">
+                  <div className="flex-1">
+                    <h3 className="text-sm sm:text-base font-medium text-red-800">Error</h3>
+                    <div className="mt-1 text-sm text-red-700">
                       <p>{error}</p>
                     </div>
                   </div>
@@ -197,11 +198,11 @@ export default function SplitPdf() {
               type="button"
               onClick={handleSplit}
               disabled={isLoading || !file}
-              className={`inline-block rounded-lg ${
-                isLoading || !file
-                  ? 'bg-gray-300 cursor-not-allowed'
+              className={`mt-6 w-full py-2.5 sm:py-3 px-4 rounded-lg text-white font-medium text-sm sm:text-base transition-colors duration-200
+                ${isLoading || !file
+                  ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-indigo-600 hover:bg-indigo-700'
-              } px-5 py-3 text-sm font-medium text-white w-full`}
+                }`}
             >
               {isLoading ? 'Processing...' : 'Split PDF'}
             </button>
@@ -209,7 +210,7 @@ export default function SplitPdf() {
             {splitResult && <ResultDisplay splitResult={splitResult} />}
           </div>
         </div>
-      </div>
+      </main>
       
       <Footer />
     </div>

@@ -1,5 +1,5 @@
 import { PdfServiceResponse, PdfSplitResponse, PdfToWordResponse } from '@/types/pdf';
-import { WordFormat } from '@/components/pdf-to-word/ConversionOptions';
+import { WordFormat } from '@/components/word-to-pdf/ConversionOptions';
 
 // Use the production URL if available, otherwise use localhost for development
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://pdf-production-ef1b.up.railway.app/api';
@@ -363,5 +363,39 @@ export const pdfService = {
     
     xhr.send(formData);
     return response;
+  },
+
+  convertWordToPdf: async (
+    file: File,
+    onProgress?: (progress: number) => void
+  ): Promise<PdfServiceResponse> => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+      formData.append('file', file);
+
+      xhr.upload.addEventListener('progress', (event) => {
+        if (onProgress && event.lengthComputable) {
+          const progress = Math.round((event.loaded * 100) / event.total);
+          onProgress(progress);
+        }
+      });
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(JSON.parse(xhr.responseText));
+        } else {
+          const error = JSON.parse(xhr.responseText);
+          reject(new Error(error.detail || 'Failed to convert Word to PDF'));
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        reject(new Error('Failed to convert Word to PDF'));
+      });
+
+      xhr.open('POST', `${API_URL}/word-to-pdf`);
+      xhr.send(formData);
+    });
   },
 }; 

@@ -85,12 +85,10 @@ const PowerPointToPdf = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">PowerPoint to PDF Converter</h2>
-        
+    <div className="w-full max-w-3xl mx-auto">
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8">
         {error && (
-          <div className="mb-4 p-4 bg-red-50 text-red-600 rounded-md">
+          <div className="mb-4 p-3 sm:p-4 bg-red-50 text-red-600 rounded-lg text-sm sm:text-base">
             {error}
           </div>
         )}
@@ -98,15 +96,16 @@ const PowerPointToPdf = () => {
         <div className="flex justify-center transition-colors duration-200">
           <div
             {...getRootProps()}
-            className="w-full max-w-xl p-8 border-2 border-dashed rounded-lg text-center cursor-pointer hover:border-blue-500 transition-colors duration-200"
+            className={`w-full p-4 sm:p-6 lg:p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors duration-200
+              ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-500'}`}
           >
             <input {...getInputProps()} />
             {uploadedFile ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
-                    className="size-5 text-indigo-600" 
+                    className="size-6 text-indigo-600" 
                     viewBox="0 0 20 20" 
                     fill="currentColor"
                   >
@@ -116,11 +115,11 @@ const PowerPointToPdf = () => {
                       clipRule="evenodd" 
                     />
                   </svg>
-                  <div className="ml-2">
-                    <span className="text-sm text-gray-700 truncate max-w-xs block">
+                  <div>
+                    <span className="text-sm sm:text-base text-gray-700 font-medium block">
                       {uploadedFile.name}
                     </span>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs sm:text-sm text-gray-500">
                       {formatFileSize(uploadedFile.size)}
                     </span>
                   </div>
@@ -133,17 +132,17 @@ const PowerPointToPdf = () => {
                     setDownloadInfo(null);
                     setProgress(0);
                   }}
-                  className="text-sm font-medium text-red-600 hover:text-red-500"
+                  className="text-sm font-medium text-red-600 hover:text-red-500 px-3 py-1 rounded-md hover:bg-red-50 transition-colors duration-200"
                 >
                   Remove
                 </button>
               </div>
             ) : (
-              <div>
-                <p className="text-gray-600">
+              <div className="space-y-2">
+                <p className="text-sm sm:text-base text-gray-600">
                   Drag and drop a PowerPoint file here, or click to select
                 </p>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-xs sm:text-sm text-gray-500">
                   Supports .ppt and .pptx files up to 50MB
                 </p>
               </div>
@@ -159,7 +158,7 @@ const PowerPointToPdf = () => {
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
-            <p className="text-sm text-gray-500 mt-2">Converting... {progress}%</p>
+            <p className="text-sm text-gray-500 mt-2 text-center">Converting... {progress}%</p>
           </div>
         )}
 
@@ -167,10 +166,10 @@ const PowerPointToPdf = () => {
           <button
             onClick={handleConvert}
             disabled={!uploadedFile || isLoading}
-            className={`mt-6 w-full py-3 px-4 rounded-lg text-white font-semibold
+            className={`mt-6 w-full py-2.5 sm:py-3 px-4 rounded-lg text-white font-medium text-sm sm:text-base
               ${!uploadedFile || isLoading
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-blue-600 hover:bg-blue-700 transition-colors duration-200'
               }`}
           >
             {isLoading ? (
@@ -187,22 +186,20 @@ const PowerPointToPdf = () => {
           </button>
         ) : (
           <div className="mt-6 space-y-4">
-            <div className="rounded-md bg-green-50 p-4">
-              <div className="flex">
-                <div className="ml-3 w-full">
-                  <h3 className="text-sm font-medium text-green-800">Success</h3>
-                  <div className="mt-2 text-sm text-green-700">
-                    <p>Your PowerPoint has been converted successfully!</p>
-                  </div>
-                  <div className="mt-4">
-                    <button
-                      onClick={handleDownload}
-                      className="inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-                    >
-                      Download PDF
-                    </button>
-                  </div>
+            <div className="rounded-lg bg-green-50 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="text-sm sm:text-base font-medium text-green-800">Success</h3>
+                  <p className="mt-1 text-sm text-green-700">
+                    Your PowerPoint has been converted successfully!
+                  </p>
                 </div>
+                <button
+                  onClick={handleDownload}
+                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 transition-colors duration-200"
+                >
+                  Download PDF
+                </button>
               </div>
             </div>
             <button
@@ -211,7 +208,7 @@ const PowerPointToPdf = () => {
                 setDownloadInfo(null);
                 setProgress(0);
               }}
-              className="w-full py-3 px-4 rounded-lg text-gray-600 font-semibold border border-gray-300 hover:bg-gray-50"
+              className="w-full py-2.5 sm:py-3 px-4 rounded-lg text-gray-600 font-medium text-sm sm:text-base border border-gray-300 hover:bg-gray-50 transition-colors duration-200"
             >
               Convert Another File
             </button>

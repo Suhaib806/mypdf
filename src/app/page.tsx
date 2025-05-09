@@ -4,15 +4,22 @@ import Hero from "@/components/hero";
 import Footer from "@/components/footer";
 import Products from "@/components/products";
 import VideoSection from "@/components/VideoSection";
+import TrustedSection from "@/components/TrustedSection";
 
 export default function Home() {
   return (
-    <div className="px-10 py-8" style={{ background: 'linear-gradient(#faf7f5, #fff)' }} >
-
-    <Header/>
+    <div className=" py-8" style={{ background: 'linear-gradient(#faf7f5, #fff)' }} >
+<div className="px-10">
+<Header/>
+</div>
+    
     <Hero/>
-    <VideoSection />
+    {/* <VideoSection /> */}
     <Products/>
+    <div className="px-10">
+    <TrustedSection />
+    </div>
+    
     <Footer/>
 
     </div>

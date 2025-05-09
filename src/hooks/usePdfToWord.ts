@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { pdfService } from "@/services/api";
-import { WordFormat } from "@/components/pdf-to-word/ConversionOptions";
+import { WordFormat } from "@/components/word-to-pdf/ConversionOptions";
 
 interface ConversionResult {
   processingTime: number;
