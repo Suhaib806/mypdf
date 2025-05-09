@@ -11,11 +11,11 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white rounded-3xl relative">
+    <header className="bg-white md:rounded-3xl relative">
     <div className="mx-auto flex h-16 md:h-22 max-w-screen-xl items-center gap-2 md:gap-4 px-3 sm:px-4 md:px-6 lg:px-8">
       <Link className="block text-[#5cacb3]" href="/">
         <span className="sr-only">Home</span>
-        <img className="w-24 sm:w-32 md:w-40 lg:w-[200px]" src="/logo.svg" alt="Logo" />
+        <img className="w-44 sm:w-32 md:w-40 lg:w-[200px]" src="/logo.svg" alt="Logo" />
       </Link>
 
       <div className="flex flex-1 items-center justify-end md:justify-center sm:justify-end">

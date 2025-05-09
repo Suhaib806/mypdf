@@ -17,11 +17,11 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
         <div className="py-8 md:py-12">
-          <div className="flex justify-between items-center gap-8">
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 md:gap-12">
             {/* Logo and Description - Left */}
             <div className="flex flex-col items-center md:items-start">
               <Link href="/" className="flex items-center">
-                <img className="w-32 sm:w-40 md:w-48" src="/logo.svg" alt="Logo" />
+                <img className="w-44 sm:w-32 md:w-40" src="/logo.svg" alt="Logo" />
               </Link>
               <p className="mt-4 text-sm text-black text-center md:text-left max-w-xs">
                 Your all-in-one solution for PDF conversion and manipulation tools.
@@ -29,9 +29,9 @@ const Footer = () => {
             </div>
 
             {/* Product Links - Center */}
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-center md:items-start">
               <h3 className="text-sm font-semibold text-gray-900 mb-4">Products</h3>
-              <nav className="flex flex-wrap justify-start gap-x-8 gap-y-2">
+              <nav className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 ">
                 {productLinks.map((link) => (
                   <Link
                     key={link.name}
@@ -45,7 +45,7 @@ const Footer = () => {
             </div>
 
             {/* Social Links - Right */}
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-center md:items-start">
               <h3 className="text-sm font-semibold text-gray-900 mb-4">Follow Us</h3>
               <div className="flex space-x-6">
                 <a

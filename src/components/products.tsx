@@ -75,7 +75,7 @@ const Products = () => {
 
   return (
     <>
-      <div className="w-full bg-white  py-12 ">
+      <div className="w-full bg-white py-12 px-4 sm:px-6 lg:px-8">
         {/* Features Section */}
         <div className="text-center mb-16">
           <h2 className="text-[18px] leading-[31px] font-semibold text-black tracking-wide">Features</h2>
@@ -98,8 +98,8 @@ const Products = () => {
               >
                 <div className="relative group h-full">
                   <div className="absolute inset-0 bg-white rounded-2xl shadow-lg transform transition-all duration-500 group-hover:scale-105"></div>
-                  <div className="relative p-8 h-full">
-                    <div className={`w-16 h-16 ${product.bgColor} rounded-2xl flex items-center justify-center text-white mb-6 transform transition-transform duration-500 group-hover:scale-110`}>
+                  <div className="relative p-8 h-full text-center md:text-left">
+                    <div className={`w-16 h-16 ${product.bgColor} rounded-2xl flex items-center justify-center text-white mb-6 transform transition-transform duration-500 group-hover:scale-110 mx-auto md:mx-0`}>
                       {product.icon}
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">{product.title}</h3>
