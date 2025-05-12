@@ -8,20 +8,28 @@ import TrustedSection from "@/components/TrustedSection";
 
 export default function Home() {
   return (
-    <div className=" py-0 md:py-8" style={{ background: 'linear-gradient(#faf7f5, #fff)' }} >
-<div className="px-0 md:px-10">
-<Header/>
-</div>
-    
-    <Hero/>
-    {/* <VideoSection /> */}
-    <Products/>
-    <div className="px-4">
-    <TrustedSection />
-    </div>
-    
-    <Footer/>
+    <main className="py-0 md:py-8" style={{ background: 'linear-gradient(#faf7f5, #fff)' }} role="main">
+      <div className="px-0 md:px-10">
+        <Header />
+      </div>
+      
+      <section aria-label="Hero section">
+        <Hero />
+      </section>
 
-    </div>
+      {/* <section aria-label="Video demonstration">
+        <VideoSection />
+      </section> */}
+
+      <section aria-label="Our products">
+        <Products />
+      </section>
+
+      <section aria-label="Trusted by users" className="px-4">
+        <TrustedSection />
+      </section>
+      
+      <Footer />
+    </main>
   );
 }

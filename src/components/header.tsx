@@ -13,7 +13,7 @@ const Header = () => {
   return (
     <header className="bg-white md:rounded-3xl relative">
     <div className="mx-auto flex h-16 md:h-22 max-w-screen-xl items-center gap-2 md:gap-4 px-3 sm:px-4 md:px-6 lg:px-8">
-      <Link className="block text-[#5cacb3]" href="/">
+      <Link className="block text-blue-600" href="/">
         <span className="sr-only">Home</span>
         <img className="w-44 sm:w-32 md:w-40 lg:w-[200px]" src="/logo.svg" alt="Logo" />
       </Link>
@@ -22,26 +22,26 @@ const Header = () => {
       <nav aria-label="Global" className="hidden md:block">
           <ul className="flex items-center gap-4 lg:gap-10 text-[14px] lg:text-[16px] font-medium">
             <li>
-              <Link className="text-black transition hover:text-[#5cacb3]" href="/merge-pdf"> Merge PDF </Link>
+              <Link className="text-black transition hover:text-blue-600" href="/merge-pdf"> Merge PDF </Link>
             </li>
   
             <li>
-              <Link  className="text-black transition hover:text-[#5cacb3]" href="/split-pdf"> Split PDF </Link>
+              <Link  className="text-black transition hover:text-blue-600" href="/split-pdf"> Split PDF </Link>
             </li>
   
             <li>
-              <Link  className="text-black transition hover:text-[#5cacb3]" href="/image-to-pdf"> Image to PDF </Link>
+              <Link  className="text-black transition hover:text-blue-600" href="/image-to-pdf"> Image to PDF </Link>
             </li>
   
             <li>
-              <Link  className="text-black transition hover:text-[#5cacb3]" href="/pdf-to-jpg"> PDF to JPG </Link>
+              <Link  className="text-black transition hover:text-blue-600" href="/pdf-to-jpg"> PDF to JPG </Link>
             </li>
   
             <li>
-              <Link className="text-black transition hover:text-[#5cacb3]" href="/powerpoint-to-pdf"> PPT to PDF </Link>
+              <Link className="text-black transition hover:text-blue-600" href="/powerpoint-to-pdf"> PPT to PDF </Link>
             </li>
             <li>
-              <Link className="text-black transition hover:text-[#5cacb3]" href="/word-to-pdf"> Word to PDF </Link>
+              <Link className="text-black transition hover:text-blue-600" href="/word-to-pdf"> Word to PDF </Link>
             </li>
           </ul>
         </nav>
