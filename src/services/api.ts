@@ -1,8 +1,10 @@
 import { PdfServiceResponse, PdfSplitResponse, PdfToWordResponse } from '@/types/pdf';
 import { WordFormat } from '@/components/word-to-pdf/ConversionOptions';
 
-// Use the production URL if available, otherwise use localhost for development
+// // Use the production URL if available, otherwise use localhost for development
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://pdf-production-ef1b.up.railway.app/api';
+
+// const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 
 
@@ -397,5 +399,177 @@ export const pdfService = {
       xhr.open('POST', `${API_URL}/word-to-pdf`);
       xhr.send(formData);
     });
+  },
+
+
+  addWatermark: async (
+    pdfFile: File,
+    watermarkImage: File,
+    opacity: number,
+    position: string,
+    scale: number,
+    onProgress?: (progress: number) => void
+  ): Promise<PdfServiceResponse> => {
+    const formData = new FormData();
+    formData.append('file', pdfFile);
+    formData.append('watermark_image', watermarkImage);
+    formData.append('opacity', opacity.toString());
+    formData.append('position', position);
+    formData.append('scale', scale.toString());
+
+    const xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', `${API_URL}/add-watermark`, true);
+    
+    // Set up progress tracking
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+    }
+    
+    // Create a promise to handle the response
+    const response = new Promise<PdfServiceResponse>((resolve, reject) => {
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(JSON.parse(xhr.responseText));
+        } else {
+          reject(new Error(xhr.statusText || 'Failed to add watermark'));
+        }
+      };
+      xhr.onerror = function() {
+        reject(new Error('Network error occurred'));
+      };
+    });
+    
+    xhr.send(formData);
+    return response;
+  },
+
+  compressPdf: async (
+    pdfFile: File,
+    quality: string,
+    onProgress?: (progress: number) => void
+  ): Promise<PdfServiceResponse> => {
+    const formData = new FormData();
+    formData.append('file', pdfFile);
+    formData.append('quality', quality);
+
+    const xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', `${API_URL}/compress-pdf`, true);
+    
+    // Set up progress tracking
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+    }
+    
+    // Create a promise to handle the response
+    const response = new Promise<PdfServiceResponse>((resolve, reject) => {
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const result = JSON.parse(xhr.responseText);
+            console.log('Compress PDF response:', result); // Debug log
+            
+            if (!result.session_id) {
+              console.error('Missing session_id in response:', result);
+              reject(new Error('Invalid response from server: missing session_id'));
+              return;
+            }
+            
+            if (!result.file_path) {
+              console.error('Missing file_path in response:', result);
+              reject(new Error('Invalid response from server: missing file_path'));
+              return;
+            }
+            
+            resolve(result);
+          } catch (error) {
+            console.error('Error parsing response:', error);
+            reject(new Error('Failed to parse server response'));
+          }
+        } else {
+          console.error('Server error:', xhr.status, xhr.statusText);
+          reject(new Error(xhr.statusText || 'Failed to compress PDF'));
+        }
+      };
+      xhr.onerror = function() {
+        console.error('Network error occurred');
+        reject(new Error('Network error occurred'));
+      };
+    });
+    
+    xhr.send(formData);
+    return response;
+  },
+
+  unlockPdf: async (
+    pdfFile: File,
+    onProgress?: (progress: number) => void
+  ): Promise<PdfServiceResponse> => {
+    const formData = new FormData();
+    formData.append('file', pdfFile);
+
+    const xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', `${API_URL}/unlock-pdf`, true);
+    
+    // Set up progress tracking
+    if (onProgress) {
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          onProgress(percentComplete);
+        }
+      };
+    }
+    
+    // Create a promise to handle the response
+    const response = new Promise<PdfServiceResponse>((resolve, reject) => {
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const result = JSON.parse(xhr.responseText);
+            console.log('Unlock PDF response:', result); // Debug log
+            
+            if (!result.session_id) {
+              console.error('Missing session_id in response:', result);
+              reject(new Error('Invalid response from server: missing session_id'));
+              return;
+            }
+            
+            if (!result.file_path) {
+              console.error('Missing file_path in response:', result);
+              reject(new Error('Invalid response from server: missing file_path'));
+              return;
+            }
+            
+            resolve(result);
+          } catch (error) {
+            console.error('Error parsing response:', error);
+            reject(new Error('Failed to parse server response'));
+          }
+        } else {
+          console.error('Server error:', xhr.status, xhr.statusText);
+          reject(new Error(xhr.statusText || 'Failed to remove PDF password'));
+        }
+      };
+      xhr.onerror = function() {
+        console.error('Network error occurred');
+        reject(new Error('Network error occurred'));
+      };
+    });
+    
+    xhr.send(formData);
+    return response;
   },
 }; 

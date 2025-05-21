@@ -4,6 +4,8 @@ export interface MergeResult {
 }
 
 export interface PdfServiceResponse {
+  message: string;
+  file_path: string;
   session_id: string;
   output_size: number;
   processing_time: number;
@@ -22,16 +24,17 @@ export interface SplitResult {
 }
 
 export interface PdfSplitResponse {
+  message: string;
+  total_pages: number;
+  result_files: string[];
   session_id: string;
   processing_time: number;
-  result_files: string[];
-  total_pages: number;
-  message: string;
 }
 
 export interface PdfToWordResponse {
+  message: string;
+  file_path: string;
   session_id: string;
-  processing_time: number;
   output_size: number;
-  format: string;
+  processing_time: number;
 } 
