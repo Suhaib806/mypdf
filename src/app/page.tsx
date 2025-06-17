@@ -5,6 +5,7 @@ import Footer from "@/components/footer";
 import Products from "@/components/products";
 import VideoSection from "@/components/VideoSection";
 import TrustedSection from "@/components/TrustedSection";
+import StatsCounter from "@/components/StatsCounter";
 
 export default function Home() {
   return (
@@ -24,6 +25,8 @@ export default function Home() {
       <section aria-label="Our products">
         <Products />
       </section>
+
+      <StatsCounter />
 
       <section aria-label="Trusted by users" className="px-4">
         <TrustedSection />
